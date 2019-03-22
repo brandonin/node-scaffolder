@@ -9,7 +9,7 @@ export function register(app) {
   app.use('/measurements', router);
 }
 
-routser.post('/', (req, res) => {
+router.post('/', (req, res) => {
   const measurement = parseMeasurement(req.body);
 
   store.add(measurement);
