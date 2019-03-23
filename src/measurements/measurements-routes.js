@@ -10,8 +10,8 @@ export function register(app) {
 }
 
 router.post('/', (req, res) => {
+  console.log(req.body)
   const measurement = parseMeasurement(req.body);
-
   store.add(measurement);
 
   res.location(`/measurements/${measurement.timestamp.toISOString()}`).sendStatus(201);
@@ -24,6 +24,7 @@ router.get('/:timestamp', (req, res) => {
 });
 
 function parseMeasurement({ timestamp, ...metrics }) {
+  console.log(timestamp);
   const measurement = new Measurement();
   measurement.timestamp = new Date(timestamp);
 

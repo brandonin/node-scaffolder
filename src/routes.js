@@ -1,5 +1,5 @@
 import express from 'express';
-import { json as parseJsonBody } from 'body-parser';
+import { json as parseJsonBody, urlencoded } from 'body-parser';
 
 import { register as registerMeasurements } from './measurements/measurements-routes';
 import { register as registerStats } from './statistics/stats-routes';
@@ -7,6 +7,7 @@ import { register as registerStats } from './statistics/stats-routes';
 const server = express();
 
 // all requests and responses are in JSON
+server.use(urlencoded({extended: true}));
 server.use(parseJsonBody());
 
 // dummy handler so you can tell if the server is running
