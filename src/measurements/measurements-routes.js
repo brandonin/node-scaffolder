@@ -1,30 +1,29 @@
 import express from 'express';
 import * as store from './measurement-store';
 import { Measurement } from './measurement';
-import { HttpError } from '../errors';
+import { HttpError, ValidationError } from '../errors';
+import validate from './measurement.validate';
+import { serializeMeasurement } from '../helpers/serialize'
 
 const router = express.Router();
-
 export function register(app) {
   app.use('/measurements', router);
 }
 
-router.post('/', (req, res) => {
-  console.log(req.body)
+router.post('/', validate('main'), (req, res) => {
+  ValidationError(req, res);
   const measurement = parseMeasurement(req.body);
   store.add(measurement);
-
   res.location(`/measurements/${measurement.timestamp.toISOString()}`).sendStatus(201);
 });
 
 router.get('/:timestamp', (req, res) => {
-  const result = store.fetch(new Date(req.params.timestamp));
+  const result = store.fetch(req.params.timestamp);
   if (result) res.json(serializeMeasurement(result));
   else res.sendStatus(404);
 });
 
 function parseMeasurement({ timestamp, ...metrics }) {
-  console.log(timestamp);
   const measurement = new Measurement();
   measurement.timestamp = new Date(timestamp);
 
@@ -40,14 +39,4 @@ function parseMeasurement({ timestamp, ...metrics }) {
   }
 
   return measurement;
-}
-
-function serializeMeasurement(measurement) {
-  const out = { timestamp: measurement.timestamp.toISOString() };
-
-  for (const [metric, value] of measurement.metrics.entries()) {
-    out[metric] = value;
-  }
-
-  return out;
 }

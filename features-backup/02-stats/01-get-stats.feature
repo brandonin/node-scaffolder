@@ -80,34 +80,3 @@ Feature: Get measurement statistics
       | "dewPoint"    | "min"     | 16.9  |
       | "dewPoint"    | "max"     | 17.3  |
       | "dewPoint"    | "average" | 17.1  |
-
-  @new
-  Scenario: Get stats for time series that doesn't exist
-    # GET /stats?<params...>
-    When I get stats with parameters:
-      | param        | value                    |
-      | stat         | min                      |
-      | stat         | max                      |
-      | stat         | average                  |
-      | metric       | temperature              |
-      | metric       | dewPoint                 |
-      | metric       | precipitation            |
-      | fromDateTime | 2015-09-05T16:00:00.000Z |
-      | toDateTime   | 2015-09-05T17:00:00.000Z |
-    Then the response has a status code of 200
-    And the response body is an empty array
-
-  @new
-  Scenario: Cannot get stats for a backward dateTime
-    # GET /stats?<params...>
-    When I get stats with parameters:
-      | param        | value                    |
-      | stat         | min                      |
-      | stat         | max                      |
-      | stat         | average                  |
-      | metric       | temperature              |
-      | metric       | dewPoint                 |
-      | metric       | precipitation            |
-      | fromDateTime | 2015-09-05T17:00:00.000Z |
-      | toDateTime   | 2015-09-05T16:00:00.000Z |
-    Then the response has a status code of 400

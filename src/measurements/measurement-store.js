@@ -1,13 +1,14 @@
 import { Measurement } from './measurement';
 import { HttpError } from '../errors';
+import { serializeMeasurement } from "../helpers/serialize";
 
+let map = new Map();
 /**
  * Add new measurement
  * @param {Measurement} measurement to be added
  */
 export function add(measurement) {
-  console.log("add", measurement);
-  throw new HttpError(501);
+  map.set(`${measurement.timestamp}`, measurement);
 }
 
 /**
@@ -16,7 +17,7 @@ export function add(measurement) {
  * @returns {Measurement} measurement for the particular date
  */
 export function fetch(timestamp) {
-  throw new HttpError(501);
+  return map.get(`${new Date(timestamp)}`);
 }
 
 /**
@@ -24,6 +25,10 @@ export function fetch(timestamp) {
  * @param {Date} start Lower bound for the query, inclusive
  * @param {Date} end Upper bound for the query, exclusive
  */
-export function queryDateRange(from, to) {
-  throw new HttpError(501);
+export function queryDateRange(start, end) {
+  return (Array.from(map)).filter(value =>
+            new Date(value[0]) >= start &&
+            new Date(value[0]) < end ?
+                true : false)
+          .map(value => serializeMeasurement(value[1]))
 }
