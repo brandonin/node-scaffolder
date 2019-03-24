@@ -12,6 +12,7 @@ export function register(app) {
 
 router.post('/', validate('main'), (req, res) => {
   ValidationError(req, res);
+  if (new Date(req.body.timestamp) > new Date()) throw new HttpError(400);
   const measurement = parseMeasurement(req.body);
   store.add(measurement);
   res.location(`/measurements/${measurement.timestamp.toISOString()}`).sendStatus(201);
